@@ -36,5 +36,5 @@ terraform.rc
 # AWS enviroment variables
 .aws_env.sh
 
-# Terraform 
+# Terraform lock
 .terraform.lock.hcl
