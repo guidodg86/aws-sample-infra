@@ -14,15 +14,16 @@ resource "aws_subnet" "private_subnets" {
   availability_zone = each.value["az"]
 
   tags = {
-    Name = each.value["name"]
+    Name     = each.key
+    Netgroup = each.value["netgroup"]
   }
 }
 
 resource "aws_instance" "ubuntu_server" {
-  ami           = data.aws_ami.ubuntu.id
-  instance_type = "t2.micro"
-  subnet_id     = aws_subnet.private_subnets["server"].id
-  security_groups             = [aws_security_group.allow_tls.id]
+  ami                         = data.aws_ami.ubuntu.id
+  instance_type               = "t2.micro"
+  subnet_id                   = aws_subnet.private_subnets["PRINTER_NETGROUP-aws-1"].id
+  security_groups             = [aws_security_group.allow_printer.id, aws_security_group.allow_http.id]
   associate_public_ip_address = true
 
   tags = {
@@ -30,24 +31,52 @@ resource "aws_instance" "ubuntu_server" {
   }
 }
 
+
+
+
 resource "aws_security_group" "allow_tls" {
   name        = "allow_tls"
   description = "Allow TLS inbound traffic"
   vpc_id      = aws_vpc.testing_vpc.id
 
   ingress {
-    description      = "TLS from VPC"
-    from_port        = 443
-    to_port          = 443
-    protocol         = "tcp"
-    cidr_blocks      = [aws_subnet.private_subnets["server"].cidr_block]
+    description = "TLS from VPC"
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+    cidr_blocks = ["10.0.0.0/8"]
   }
 
   egress {
-    from_port        = 0
-    to_port          = 0
-    protocol         = "-1"
-    cidr_blocks      = ["0.0.0.0/0"]
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    Name = "allow_tls"
+  }
+}
+
+resource "aws_security_group" "allow_printer" {
+  name        = "allow_tls"
+  description = "Allow TLS inbound traffic"
+  vpc_id      = aws_vpc.testing_vpc.id
+
+  ingress {
+    description = "TCP printer port"
+    from_port   = 9100
+    to_port     = 9100
+    protocol    = "tcp"
+    cidr_blocks = ["10.0.0.0/8"]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
   }
 
   tags = {
@@ -61,18 +90,18 @@ resource "aws_security_group" "allow_http" {
   vpc_id      = aws_vpc.testing_vpc.id
 
   ingress {
-    description      = "HTTP from sg"
-    from_port        = 80
-    to_port          = 80
-    protocol         = "tcp"
-    self = true
+    description = "HTTP from sg"
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    self        = true
   }
 
   egress {
-    from_port        = 0
-    to_port          = 0
-    protocol         = "-1"
-    cidr_blocks      = ["0.0.0.0/0"]
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
   }
 
   tags = {

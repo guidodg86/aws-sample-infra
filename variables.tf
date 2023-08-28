@@ -16,30 +16,30 @@ variable "vpc_cidr" {
 variable "subnets" {
   type = map(any)
   default = {
-    printer = {
-      "cidr" = "10.0.1.0/24",
-      "name" = "PRINTER_NETGROUP",
-      "az"   = "us-east-1a"
+    PRINTER_NETGROUP-aws-1 = {
+      "cidr"     = "10.0.1.0/24",
+      "netgroup" = "PRINTER_NETGROUP",
+      "az"       = "us-east-1a"
     }
-    cctv = {
-      "cidr" = "10.0.2.0/24",
-      "name" = "CCTV_NETGROUP",
-      "az"   = "us-east-1b"
+    CCTV_NETGROUP-aws-1 = {
+      "cidr"     = "10.0.2.0/24",
+      "netgroup" = "CCTV_NETGROUP",
+      "az"       = "us-east-1b"
     }
-    server = {
-      "cidr" = "10.0.3.0/24",
-      "name" = "SRV_NETGROUP",
-      "az"   = "us-east-1c"
+    SRV_NETGROUP-aws-1 = {
+      "cidr"     = "10.0.3.0/24",
+      "netgroup" = "SRV_NETGROUP",
+      "az"       = "us-east-1c"
     }
-    database = {
-      "cidr" = "10.0.4.0/24",
-      "name" = "DATABASE_NETGROUP",
-      "az"   = "us-east-1d"
+    DATABASE_NETGROUP-aws-1 = {
+      "cidr"     = "10.0.4.0/24",
+      "netgroup" = "DATABASE_NETGROUP",
+      "az"       = "us-east-1d"
     }
-    kubernetes = {
-      "cidr" = "10.0.6.0/24",
-      "name" = "KUBERNETES_NETGROUP",
-      "az"   = "us-east-1e"
+    KUBERNETES_NETGROUP-aws-1 = {
+      "cidr"     = "10.0.6.0/24",
+      "netgroup" = "KUBERNETES_NETGROUP",
+      "az"       = "us-east-1e"
     }
   }
 
