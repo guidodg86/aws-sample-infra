@@ -38,5 +38,5 @@ Security groups :male_detective: will be created also to provide the following a
     any__PRINTER -> any -> PRINTER_NETGROUP -> tcp=443,udp=1000-1200
     ec2__ec2 -> any Ec2 instance -> any Ec2 instance -> tcp=80
 
-[!IMPORTANT]
-Last rule will be created referring to security group itself
+> [!IMPORTANT]
+> Last rule will be created referring to security group itself
