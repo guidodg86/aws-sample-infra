@@ -42,7 +42,9 @@ variable "subnets" {
       "az"       = "us-east-1e"
     }
   }
-
 }
 
-
+variable "netbox_token" {
+  type        = string
+  description = "ENV variable with token for netbox api"
+}

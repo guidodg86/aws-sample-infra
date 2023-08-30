@@ -26,7 +26,7 @@ resource "aws_instance" "printer-server" {
   ami                         = data.aws_ami.ubuntu.id
   instance_type               = "t2.micro"
   subnet_id                   = aws_subnet.private_subnets["PRINTER_NETGROUP-aws-1"].id
-  security_groups             = [aws_security_group.hr__printer.id, aws_security_group.ec2__ec2.id]
+  vpc_security_group_ids      = [aws_security_group.hr__printer.id, aws_security_group.ec2__ec2.id]
   associate_public_ip_address = true
 
   tags = {
@@ -38,7 +38,7 @@ resource "aws_instance" "cctv-server" {
   ami                         = data.aws_ami.ubuntu.id
   instance_type               = "t2.micro"
   subnet_id                   = aws_subnet.private_subnets["CCTV_NETGROUP-aws-1"].id
-  security_groups             = [aws_security_group.sec__cctv.id, aws_security_group.ec2__ec2.id]
+  vpc_security_group_ids      = [aws_security_group.sec__cctv.id, aws_security_group.ec2__ec2.id]
   associate_public_ip_address = true
 
   tags = {
@@ -50,7 +50,7 @@ resource "aws_instance" "srv-server" {
   ami                         = data.aws_ami.ubuntu.id
   instance_type               = "t2.micro"
   subnet_id                   = aws_subnet.private_subnets["SRV_NETGROUP-aws-1"].id
-  security_groups             = [aws_security_group.sre__srv.id, aws_security_group.ec2__ec2.id]
+  vpc_security_group_ids      = [aws_security_group.sre__srv.id, aws_security_group.ec2__ec2.id]
   associate_public_ip_address = true
 
   tags = {
@@ -62,7 +62,7 @@ resource "aws_instance" "database-server" {
   ami                         = data.aws_ami.ubuntu.id
   instance_type               = "t2.micro"
   subnet_id                   = aws_subnet.private_subnets["DATABASE_NETGROUP-aws-1"].id
-  security_groups             = [aws_security_group.dev__database.id, aws_security_group.ec2__ec2.id]
+  vpc_security_group_ids      = [aws_security_group.dev__database.id, aws_security_group.ec2__ec2.id]
   associate_public_ip_address = true
 
   tags = {
@@ -74,7 +74,7 @@ resource "aws_instance" "kubernetes-cluster" {
   ami                         = data.aws_ami.ubuntu.id
   instance_type               = "t2.micro"
   subnet_id                   = aws_subnet.private_subnets["KUBERNETES_NETGROUP-aws-1"].id
-  security_groups             = [aws_security_group.sre__kubernetes.id, aws_security_group.ec2__ec2.id]
+  vpc_security_group_ids      = [aws_security_group.sre__kubernetes.id, aws_security_group.ec2__ec2.id]
   associate_public_ip_address = true
 
   tags = {
