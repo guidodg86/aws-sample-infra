@@ -6,6 +6,7 @@ resource "aws_vpc" "testing_vpc" {
   }
 }
 
+
 # Deploy the private subnets
 resource "aws_subnet" "private_subnets" {
   for_each          = var.subnets
@@ -19,21 +20,70 @@ resource "aws_subnet" "private_subnets" {
   }
 }
 
-# resource "aws_instance" "ubuntu_server" {
-#   ami                         = data.aws_ami.ubuntu.id
-#   instance_type               = "t2.micro"
-#   subnet_id                   = aws_subnet.private_subnets["PRINTER_NETGROUP-aws-1"].id
-#   security_groups             = [aws_security_group.allow_printer.id, aws_security_group.allow_http.id]
-#   associate_public_ip_address = true
 
-#   tags = {
-#     Name = "printer-server"
-#   }
-# }
+# Deploy aws instances -> One instance per subnet
+resource "aws_instance" "printer-server" {
+  ami                         = data.aws_ami.ubuntu.id
+  instance_type               = "t2.micro"
+  subnet_id                   = aws_subnet.private_subnets["PRINTER_NETGROUP-aws-1"].id
+  security_groups             = [aws_security_group.hr__printer.id, aws_security_group.ec2__ec2.id]
+  associate_public_ip_address = true
+
+  tags = {
+    Name = "printer-server"
+  }
+}
+
+resource "aws_instance" "cctv-server" {
+  ami                         = data.aws_ami.ubuntu.id
+  instance_type               = "t2.micro"
+  subnet_id                   = aws_subnet.private_subnets["CCTV_NETGROUP-aws-1"].id
+  security_groups             = [aws_security_group.sec__cctv.id, aws_security_group.ec2__ec2.id]
+  associate_public_ip_address = true
+
+  tags = {
+    Name = "cctv-server"
+  }
+}
+
+resource "aws_instance" "srv-server" {
+  ami                         = data.aws_ami.ubuntu.id
+  instance_type               = "t2.micro"
+  subnet_id                   = aws_subnet.private_subnets["SRV_NETGROUP-aws-1"].id
+  security_groups             = [aws_security_group.sre__srv.id, aws_security_group.ec2__ec2.id]
+  associate_public_ip_address = true
+
+  tags = {
+    Name = "srv-server"
+  }
+}
+
+resource "aws_instance" "database-server" {
+  ami                         = data.aws_ami.ubuntu.id
+  instance_type               = "t2.micro"
+  subnet_id                   = aws_subnet.private_subnets["DATABASE_NETGROUP-aws-1"].id
+  security_groups             = [aws_security_group.dev__database.id, aws_security_group.ec2__ec2.id]
+  associate_public_ip_address = true
+
+  tags = {
+    Name = "database-server"
+  }
+}
+
+resource "aws_instance" "kubernetes-cluster" {
+  ami                         = data.aws_ami.ubuntu.id
+  instance_type               = "t2.micro"
+  subnet_id                   = aws_subnet.private_subnets["KUBERNETES_NETGROUP-aws-1"].id
+  security_groups             = [aws_security_group.sre__kubernetes.id, aws_security_group.ec2__ec2.id]
+  associate_public_ip_address = true
+
+  tags = {
+    Name = "kubernetes-cluster"
+  }
+}
 
 
-
-
+# Deploy aws instances -> One instance per subnet
 resource "aws_security_group" "hr__printer" {
   name        = "hr__printer"
   description = "hr__printer"
