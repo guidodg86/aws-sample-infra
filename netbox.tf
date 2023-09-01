@@ -4,7 +4,7 @@ resource "netbox_rir" "test" {
 
 resource "netbox_aggregate" "aws_agg" {
   prefix      = "10.0.0.0/16"
-  description = "aws"
+  description = format("aws - account=%s - region=%s - vpc_id=%s", data.aws_caller_identity.current.account_id, var.aws_region, aws_vpc.testing_vpc.id)
   rir_id      = netbox_rir.test.id
 }
 
@@ -76,7 +76,7 @@ resource "netbox_prefix" "printer" {
   status      = "active"
   site_id     = netbox_site.aws.id
   role_id     = netbox_ipam_role.printer.id
-  description = "R-PRINTER_NETGROUP-aws"
+  description = aws_subnet.private_subnets["PRINTER_NETGROUP-aws-1"].id
 }
 
 resource "netbox_prefix" "cctv" {
@@ -173,4 +173,123 @@ resource "netbox_prefix" "sec-ltv2" {
   site_id     = netbox_site.ltv2.id
   role_id     = netbox_ipam_role.sec.id
   description = "R-SEC_NETGROUP-ltv2"
+}
+
+resource "netbox_device_role" "ec2-role" {
+  name      = "ec2 instance"
+  color_hex = "5832a8"
+}
+
+resource "netbox_manufacturer" "aws-manufacturer" {
+  name = "aws"
+}
+
+resource "netbox_device_type" "ubuntu-instance" {
+  model           = "ubuntu"
+  manufacturer_id = netbox_manufacturer.aws-manufacturer.id
+}
+
+resource "netbox_device" "printer-server" {
+  name           = aws_instance.printer-server.tags.Name
+  device_type_id = netbox_device_type.ubuntu-instance.id
+  role_id        = netbox_device_role.ec2-role.id
+  site_id        = netbox_site.aws.id
+  serial         = aws_instance.printer-server.id
+}
+
+resource "netbox_device_interface" "printer-server-int" {
+  name      = "eth0"
+  device_id = netbox_device.printer-server.id
+  type      = "1000base-t"
+}
+
+resource "netbox_ip_address" "printer-server-ip" {
+  ip_address   = format("%s/%s", aws_instance.printer-server.private_ip, split("/", aws_subnet.private_subnets["PRINTER_NETGROUP-aws-1"].cidr_block)[1])
+  status       = "active"
+  interface_id = netbox_device_interface.printer-server-int.id
+  object_type  = "dcim.interface"
+}
+
+resource "netbox_device" "cctv-server" {
+  name           = aws_instance.cctv-server.tags.Name
+  device_type_id = netbox_device_type.ubuntu-instance.id
+  role_id        = netbox_device_role.ec2-role.id
+  site_id        = netbox_site.aws.id
+  serial         = aws_instance.cctv-server.id
+}
+
+resource "netbox_device_interface" "cctv-server-int" {
+  name      = "eth0"
+  device_id = netbox_device.cctv-server.id
+  type      = "1000base-t"
+}
+
+resource "netbox_ip_address" "cctv-server-ip" {
+  ip_address   = format("%s/%s", aws_instance.cctv-server.private_ip, split("/", aws_subnet.private_subnets["CCTV_NETGROUP-aws-1"].cidr_block)[1])
+  status       = "active"
+  interface_id = netbox_device_interface.cctv-server-int.id
+  object_type  = "dcim.interface"
+}
+
+resource "netbox_device" "srv-server" {
+  name           = aws_instance.srv-server.tags.Name
+  device_type_id = netbox_device_type.ubuntu-instance.id
+  role_id        = netbox_device_role.ec2-role.id
+  site_id        = netbox_site.aws.id
+  serial         = aws_instance.srv-server.id
+}
+
+resource "netbox_device_interface" "srv-server-int" {
+  name      = "eth0"
+  device_id = netbox_device.srv-server.id
+  type      = "1000base-t"
+}
+
+resource "netbox_ip_address" "srv-server-ip" {
+  ip_address   = format("%s/%s", aws_instance.srv-server.private_ip, split("/", aws_subnet.private_subnets["SRV_NETGROUP-aws-1"].cidr_block)[1])
+  status       = "active"
+  interface_id = netbox_device_interface.srv-server-int.id
+  object_type  = "dcim.interface"
+}
+
+resource "netbox_device" "database-server" {
+  name           = aws_instance.database-server.tags.Name
+  device_type_id = netbox_device_type.ubuntu-instance.id
+  role_id        = netbox_device_role.ec2-role.id
+  site_id        = netbox_site.aws.id
+  serial         = aws_instance.database-server.id
+}
+
+resource "netbox_device_interface" "database-server-int" {
+  name      = "eth0"
+  device_id = netbox_device.database-server.id
+  type      = "1000base-t"
+}
+
+resource "netbox_ip_address" "database-server-ip" {
+  ip_address   = format("%s/%s", aws_instance.database-server.private_ip, split("/", aws_subnet.private_subnets["DATABASE_NETGROUP-aws-1"].cidr_block)[1])
+  status       = "active"
+  interface_id = netbox_device_interface.database-server-int.id
+  object_type  = "dcim.interface"
+}
+
+resource "netbox_device" "kubernetes-cluster" {
+  name           = aws_instance.kubernetes-cluster.tags.Name
+  device_type_id = netbox_device_type.ubuntu-instance.id
+  role_id        = netbox_device_role.ec2-role.id
+  site_id        = netbox_site.aws.id
+  serial         = aws_instance.kubernetes-cluster.id
+}
+
+resource "netbox_device_interface" "kubernetes-cluster-int" {
+  name      = "eth0"
+  device_id = netbox_device.kubernetes-cluster.id
+  type      = "1000base-t"
+}
+
+resource "netbox_ip_address" "kubernetes-cluster-ip" {
+  ip_address   = format("%s/%s", aws_instance.kubernetes-cluster.private_ip, split("/", aws_subnet.private_subnets["KUBERNETES_NETGROUP-aws-1"].cidr_block)[1])
+  status       = "active"
+  interface_id = netbox_device_interface.kubernetes-cluster-int.id
+  object_type  = "dcim.interface"
 }
