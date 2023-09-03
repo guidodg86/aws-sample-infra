@@ -104,7 +104,7 @@ resource "netbox_prefix" "database" {
 }
 
 resource "netbox_prefix" "kubernetes" {
-  prefix      = "10.0.5.0/24"
+  prefix      = "10.0.6.0/24"
   status      = "active"
   site_id     = netbox_site.aws.id
   role_id     = netbox_ipam_role.kubernetes.id
