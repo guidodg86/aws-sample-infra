@@ -84,7 +84,7 @@ resource "netbox_prefix" "cctv" {
   status      = "active"
   site_id     = netbox_site.aws.id
   role_id     = netbox_ipam_role.cctv.id
-  description = "R-CCTV_NETGROUP-aws"
+  description = aws_subnet.private_subnets["CCTV_NETGROUP-aws-1"].id
 }
 
 resource "netbox_prefix" "srv" {
@@ -92,7 +92,7 @@ resource "netbox_prefix" "srv" {
   status      = "active"
   site_id     = netbox_site.aws.id
   role_id     = netbox_ipam_role.srv.id
-  description = "R-SRV_NETGROUP-aws"
+  description = aws_subnet.private_subnets["SRV_NETGROUP-aws-1"].id
 }
 
 resource "netbox_prefix" "database" {
@@ -100,7 +100,7 @@ resource "netbox_prefix" "database" {
   status      = "active"
   site_id     = netbox_site.aws.id
   role_id     = netbox_ipam_role.database.id
-  description = "R-DATABASE_NETGROUP-aws"
+  description = aws_subnet.private_subnets["DATABASE_NETGROUP-aws-1"].id
 }
 
 resource "netbox_prefix" "kubernetes" {
@@ -108,7 +108,7 @@ resource "netbox_prefix" "kubernetes" {
   status      = "active"
   site_id     = netbox_site.aws.id
   role_id     = netbox_ipam_role.kubernetes.id
-  description = "R-KUBERNETES_NETGROUP-aws"
+  description = aws_subnet.private_subnets["KUBERNETES_NETGROUP-aws-1"].id
 }
 
 resource "netbox_prefix" "hr-bue1" {
