@@ -30,6 +30,7 @@ Outside AWS we will create two branch sites `bue1` and `ltv2`. The following sub
 ### Access matrix
 Security groups :male_detective: will be created also to provide the following access matrix, controlling traffic that ingress to different ec2 instances only. Egress traffic will be always allowed towards any cidr in any port. Rules are described the following way `rule_name -> source_role -> destination_role -> destination_port`. All source ports are allowed
 
+Inbound
     HR__PRINTER     -> HR_NETGROUP      -> PRINTER_NETGROUP  -> tcp=9000
     DEV__DATABASE   -> DEV_NETGROUP     -> DATABASE_NETGROUP -> tcp=9010,990;udp=3000-3200
     SRE__SRV        -> SRE_NETGROUP     -> SRV_NETGROUP      -> tcp=9900,2000-3000;udp=53
@@ -37,6 +38,10 @@ Security groups :male_detective: will be created also to provide the following a
     SEC__CCTV       -> SEC_NETGROUP     -> CCTV_NETGROUP     -> tcp=443
     any__PRINTER    -> any              -> PRINTER_NETGROUP  -> tcp=443,udp=1000-1200
     ec2__ec2        -> any Ec2 instance -> any Ec2 instance  -> tcp=80
+
+Outbound
+    SEC__CCTV       -> CCTV_NETGROUP    -> SEC_NETGROUP      -> tcp=443
+    ec2__ec2        -> any Ec2 instance -> any Ec2 instance  -> tcp=8000-9000
 
 > [!IMPORTANT]
 > Last rule will be created referring to security group

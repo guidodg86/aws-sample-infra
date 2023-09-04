@@ -246,10 +246,11 @@ resource "aws_security_group" "sec__cctv" {
   }
 
   egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
+    description = "tcp=8000-9000"
+    from_port   = 8000
+    to_port     = 9000
+    protocol    = "tcp"
+    cidr_blocks = ["10.1.13.0/24", "10.2.13.0/24"]
   }
 
   tags = {
@@ -271,10 +272,11 @@ resource "aws_security_group" "ec2__ec2" {
   }
 
   egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
+    description = "tcp=1000"
+    from_port   = 1000
+    to_port     = 1000
+    protocol    = "tcp"
+    self        = true
   }
 
   tags = {
